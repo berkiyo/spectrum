@@ -4,11 +4,25 @@
     android:background="#FFB3B9">
 
     <TextView
+        android:id="@+id/textMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="Sound Meter Fragment!"
-        android:textSize="20sp"
-        android:textStyle="italic" />
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="50dp"
+        android:text="To compliment the app, there will be a sound meter to measure the decibels in the environment."
+        android:layout_below="@+id/textMain"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+
     
 </RelativeLayout>

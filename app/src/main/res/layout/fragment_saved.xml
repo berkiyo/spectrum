@@ -5,10 +5,24 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:id="@+id/mainText"
         android:layout_height="wrap_content"
         android:text="Saved Responses!"
         android:layout_centerInParent="true"
-        android:textSize="20sp"
-        android:textStyle="italic"/>
+        android:textSize="22dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="50dp"
+        android:text="Currently WIP. The database view will go here.
+along with functionality like sorting, clearing the database and more."
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/mainText"
+        android:textSize="16dp"
+        android:textStyle="bold"/>
+
+
     
 </RelativeLayout>
