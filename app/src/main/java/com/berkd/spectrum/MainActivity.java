@@ -1,4 +1,4 @@
-package com.berkd.freqs;
+package com.berkd.spectrum;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;

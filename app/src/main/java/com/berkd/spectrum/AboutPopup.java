@@ -1,4 +1,4 @@
-package com.berkd.freqs;
+package com.berkd.spectrum;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

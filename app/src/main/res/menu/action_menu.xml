@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/item1"
-        android:title="Clear Saved Data"
-        app:showAsAction="never" />
+        android:title="Save"
+        app:showAsAction="always" />
 
     <item android:id="@+id/item2"
         android:title="About"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
 
 </menu>
