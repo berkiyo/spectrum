@@ -7,16 +7,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
+import android.widget.Spinner;
 
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
+    Spinner samplesSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState(); // Take care of rotating the hamburger icon
 
         setupFragment(savedInstanceState, navigationView); // Called to setup initial fragment view, see function below...
+
+
+
     }
 
     // ctrl+i
@@ -52,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.hamburger_frequencyResponse:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new FrequencyResponseFragment()).commit();
+                        new SpectrumFragment()).commit();
                 break;
 
 
@@ -126,6 +136,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.item2:
                 aboutPopup();
                 break;
+
+            case R.id.item3:
+                aboutPopup();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -143,9 +157,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setupFragment(Bundle savedInstanceState, NavigationView navigationView) {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new FrequencyResponseFragment()).commit();
+                    new SpectrumFragment()).commit();
             navigationView.setCheckedItem(R.id.hamburger_frequencyResponse); // needed when app rotates
         }
     }
+
+
+    public void spinnerSamplingRate() {
+
+        //find spinner's view
+        samplesSpinner = (Spinner) findViewById(R.id.spinner_samples);
+
+        //create adapter
+        ArrayAdapter<CharSequence> adapter =
+                ArrayAdapter.createFromResource(this,
+                        R.array.samples,
+                        android.R.layout.simple_spinner_item);
+
+        //how the spinner will look when it drop downs on click
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //setting adapter to spinner
+        samplesSpinner.setAdapter(adapter);
+    }
+
+
+
+
 
 }

@@ -4,9 +4,13 @@
 
     <item android:id="@+id/item1"
         android:title="Save"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
     <item android:id="@+id/item2"
+        android:title="Keep Screen On"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/item3"
         android:title="About"
         app:showAsAction="never" />
 
