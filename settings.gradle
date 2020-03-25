@@ -1,2 +1,2 @@
-rootProject.name='Freqs'
+rootProject.name='Spectrum'
 include ':app'

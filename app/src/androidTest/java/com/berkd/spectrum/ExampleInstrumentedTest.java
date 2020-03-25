@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.berkd.freqs", appContext.getPackageName());
+        assertEquals("com.berkd.spectrum", appContext.getPackageName());
     }
 }

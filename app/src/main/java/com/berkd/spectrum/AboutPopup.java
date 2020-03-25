@@ -16,7 +16,7 @@ public class AboutPopup extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Coming soon!")
-                .setMessage("Freqs is currently under heavy development, " +
+                .setMessage("Spectrum is currently under heavy development, " +
                         "more functionality coming soon.")
 
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {

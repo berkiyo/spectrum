@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Freqs.iml" filepath="$PROJECT_DIR$/Freqs.iml" group="Freqs" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Freqs/app" />
+      <module fileurl="file://$PROJECT_DIR$/Spectrum.iml" filepath="$PROJECT_DIR$/Spectrum.iml" group="Spectrum" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Spectrum/app" />
     </modules>
   </component>
 </project>
