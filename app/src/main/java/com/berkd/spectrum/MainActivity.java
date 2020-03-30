@@ -2,17 +2,10 @@ package com.berkd.spectrum;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,12 +13,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    MediaPlayer player;
-    String audioFilePicked; // For the dropdown spinner (audioFile spinner)
+    private MediaPlayer player;
+    private String audioFilePicked; // For the dropdown spinner (audioFile spinner)
+
+    private Handler handler;
+    private Recorder recorder;
+    private AudioCalculator audioCalculator;
+
+    private TextView textAmplitude;
+    private TextView textDecibel;
+    private TextView textFrequency;
+
 
 
     @Override
@@ -35,11 +38,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         initAudioFileSpinner();
         initAudioSamplesSpinner();
-        initAudioSourceSpinner();
-
         constructionDialog();
 
+        recorder = new Recorder(callback);
+        audioCalculator = new AudioCalculator();
+        handler = new Handler(Looper.getMainLooper());
+
+        textAmplitude = (TextView) findViewById(R.id.textAmplitude);
+        textDecibel = (TextView) findViewById(R.id.textDecibel);
+        textFrequency = (TextView) findViewById(R.id.textFrequency);
+
+
     }
+
+
 
 
     /**
@@ -138,14 +150,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * INIT AUDIO SOURCE SPINNER
      *  Initialise "Audio Source" the spinner for use
      */
-    public void initAudioSourceSpinner() {
-        Spinner audioSourceSpinner = findViewById(R.id.spinner_audiosource);
-        ArrayAdapter<CharSequence> audioSourceAdapter = ArrayAdapter.createFromResource(this, R.array.sources,
-                android.R.layout.simple_spinner_item);
-        audioSourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        audioSourceSpinner.setAdapter(audioSourceAdapter);
-        audioSourceSpinner.setOnItemSelectedListener(this);
-    }
+
 
     /**
      * WHEN ITEM SELECTED FOR SPINNERS
@@ -192,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
 
-
             player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
@@ -216,9 +220,55 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private Callback callback = new Callback() {
+
+        @Override
+        public void onBufferAvailable(byte[] buffer) {
+            audioCalculator.setBytes(buffer);
+            int amplitude = audioCalculator.getAmplitude();
+            double decibel = audioCalculator.getDecibel();
+            double frequency = audioCalculator.getFrequency();
+
+            final String amp = String.valueOf(amplitude + " Amp");
+            final String db = String.valueOf(decibel + " dB");
+            final String hz = String.valueOf(frequency + " Hz");
+
+
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    textAmplitude.setText(amp);
+                    textDecibel.setText(db);
+                    textFrequency.setText(hz);
+
+                }
+            });
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        recorder.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        recorder.stop();
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
         stopPlayer();
     }
+
+
 }
