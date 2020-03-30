@@ -13,14 +13,11 @@
         <item>Default</item>
     </string-array>
 
-    <string-array name="scale">
-        <item>Logarithmic</item>
-        <item>Linear</item>
-    </string-array>
-
     <string-array name="audioFile">
-        <item>20Hz to 20kHz Sweep</item>
-        <item>5000Hz Tone</item>
+        <item>20kHz Sweep</item>
+        <item>5kHz Tone</item>
+        <item>8kHz Tone</item>
+        <item>Select From Storage</item>
     </string-array>
 
 

@@ -7,7 +7,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,8 +24,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    static int sampleRate = 44100;
-    static int freqOfTone = 20000;
+    MediaPlayer player;
+    String audioFilePicked; // For the dropdown spinner (audioFile spinner)
 
 
     @Override
@@ -32,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initAudioFileSpinner();
         initAudioSamplesSpinner();
         initAudioSourceSpinner();
+
+        constructionDialog();
+
     }
 
 
@@ -51,6 +58,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void helpDialog() {
         HelpDialog helpDialog = new HelpDialog();
         helpDialog.show(getSupportFragmentManager(), "help dialog");
+    }
+
+    public void constructionDialog() {
+        ConstructionDialog constructionDialog = new ConstructionDialog();
+        constructionDialog.show(getSupportFragmentManager(), "construction dialog");
     }
 
     @Override
@@ -76,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             // item3
             case R.id.item2:
-                aboutDialog();
+                helpDialog();
                 break;
 
             case R.id.item3:
@@ -135,14 +147,78 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         audioSourceSpinner.setOnItemSelectedListener(this);
     }
 
+    /**
+     * WHEN ITEM SELECTED FOR SPINNERS
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
+
+        audioFilePicked = text; // Set the audio file picked for player
+
         Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    /**
+     * PLAY SOUND
+     * When play is pressed, play the sound until it is finished or STOP is pressed
+     */
+    public void playSound(View v) {
+        // If created, we don't want to create another one
+        if (player == null) {
+
+            switch (audioFilePicked) {
+                case "20kHz Sweep":
+                    player = MediaPlayer.create(this, R.raw.twentythousand);
+                    player.start();
+                    break;
+                case "5kHz Tone":
+                    player = MediaPlayer.create(this, R.raw.fivekhz);
+                    player.start();
+                    break;
+                case "8kHz Tone":
+                    player = MediaPlayer.create(this, R.raw.eightkhz);
+                    player.start();
+                    break;
+
+            }
+
+
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    stopPlayer();
+                }
+            });
+        }
+
+
+    }
+
+    public void stopSound(View v) {
+        stopPlayer();
+    }
+
+    private void stopPlayer() {
+        if (player != null) {
+            player.release();
+            player = null;
+            Toast.makeText(this, "Audio Stopped", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopPlayer();
     }
 }
