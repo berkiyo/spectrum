@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Spectrum</string>
 
-    <string-array name="samples">
+    <string-array name="sampleRate">
         <item>48000 Hz</item>
         <item>44100 Hz</item>
         <item>22050 Hz</item>
@@ -16,6 +16,11 @@
     <string-array name="scale">
         <item>Logarithmic</item>
         <item>Linear</item>
+    </string-array>
+
+    <string-array name="audioFile">
+        <item>20Hz to 20kHz Sweep</item>
+        <item>5000Hz Tone</item>
     </string-array>
 
 
