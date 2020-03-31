@@ -70,7 +70,7 @@
         app:layout_constraintHorizontal_bias="0.212"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.546" />
+        app:layout_constraintVertical_bias="0.571" />
 
     <TextView
         android:id="@+id/textFrequency"
@@ -83,19 +83,20 @@
         app:layout_constraintHorizontal_bias="0.818"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.546" />
+        app:layout_constraintVertical_bias="0.571" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="474dp"
-        android:layout_height="133dp"
+        android:layout_width="548dp"
+        android:layout_height="83dp"
         android:layout_marginTop="560dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_panel" />
+        app:srcCompat="@drawable/bar_new" />
 
     <TextView
         android:id="@+id/textDecibel"
@@ -113,8 +114,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="343dp"
-        android:layout_height="351dp"
+        android:layout_width="435dp"
+        android:layout_height="427dp"
         android:layout_marginBottom="364dp"
         android:background="#A5A5A5"
         app:layout_constraintBottom_toBottomOf="parent"

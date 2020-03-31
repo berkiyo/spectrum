@@ -2,6 +2,11 @@ package com.berkd.spectrum;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         textFrequency = (TextView) findViewById(R.id.textFrequency);
 
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+        }
+
     }
 
 
@@ -75,6 +85,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void constructionDialog() {
         ConstructionDialog constructionDialog = new ConstructionDialog();
         constructionDialog.show(getSupportFragmentManager(), "construction dialog");
+    }
+
+    public void permissionDialog() {
+        PermissionDialog permissionDialog = new PermissionDialog();
+        permissionDialog.show(getSupportFragmentManager(), "permission dialog");
     }
 
     @Override
@@ -269,6 +284,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onStop();
         stopPlayer();
     }
+
+
+
 
 
 }
