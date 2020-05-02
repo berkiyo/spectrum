@@ -21,6 +21,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private MediaPlayer player;
@@ -34,9 +39,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView textDecibel;
     private TextView textFrequency;
     private TextView textStatus;
+    private TextView textAverageFreq;
+    private TextView textAverageAmp;
 
-    private int amplitudeVals[];        // Store the amplitude values (recording only)
-    private int frequencyVals[];        // Store the frequency values (recording only)
+    private int[] amplitudeVals = new int[50];        // Store the amplitude values (recording only)
+    private double[] frequencyVals = new double[50];        // Store the frequency values (recording only)
+
 
 
 
@@ -56,7 +64,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         textAmplitude = (TextView) findViewById(R.id.textAmplitude);
         textDecibel = (TextView) findViewById(R.id.textDecibel);
         textFrequency = (TextView) findViewById(R.id.textFrequency);
-        textStatus = (TextView) findViewById(R.id.textStatus); // display status of program
+        //textStatus = (TextView) findViewById(R.id.textStatus); // display status of program
+
+        textAverageAmp = findViewById(R.id.textAverageAmp);
+        textAverageFreq = findViewById(R.id.textAverageFreq);
+
+
 
 
         /**
@@ -252,6 +265,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     public void startRecord(View v) {
 
+        int averageAmp = 0;
+        double averageFreq = 0;
+        String averageAmpStr;
+        String averageFreqStr;
+
+        // USING 50 points for now
+        for (int i = 0; i < 50; i++) {
+
+            amplitudeVals[i] = audioCalculator.getAmplitude();
+            frequencyVals[i] = audioCalculator.getFrequency();
+        }
+
+        // calculate the average
+        for (int i = 0; i < amplitudeVals.length; i++) {
+            averageAmp = averageAmp + amplitudeVals[i];
+            averageAmp = averageAmp/50;
+
+            averageFreq = averageFreq + frequencyVals[i];
+            averageFreq = averageFreq/50;
+        }
+
+
+        averageAmpStr = "Average Amplitude = " + averageAmp;
+        averageFreqStr = "Average Frequency = " + averageFreq;
+
+        textAverageAmp.setText(averageAmpStr);
+        textAverageFreq.setText(averageFreqStr);
+
+
+        GraphView graph = (GraphView) findViewById(R.id.graphview);
+
+        for (int i = 0; i<50; i++) {
+            PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(new DataPoint[] {
+
+                    new DataPoint(amplitudeVals[i], frequencyVals[i])
+            });
+            graph.addSeries(series);
+
+        }
+
+
+
+
+
     }
 
 
@@ -269,9 +326,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             double decibel = audioCalculator.getDecibel();
             double frequency = audioCalculator.getFrequency();
 
-            final String amp = String.valueOf(amplitude + " Amp");
-            final String db = String.valueOf(decibel + " dB");
-            final String hz = String.valueOf(frequency + " Hz");
+            final String amp = String.valueOf(amplitude);
+            final String db = String.valueOf(decibel);
+            final String hz = String.valueOf(frequency);
 
 
 
