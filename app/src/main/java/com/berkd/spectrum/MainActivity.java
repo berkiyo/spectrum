@@ -33,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView textAmplitude;
     private TextView textDecibel;
     private TextView textFrequency;
+    private TextView textStatus;
+
+    private int amplitudeVals[];        // Store the amplitude values (recording only)
+    private int frequencyVals[];        // Store the frequency values (recording only)
 
 
 
@@ -52,8 +56,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         textAmplitude = (TextView) findViewById(R.id.textAmplitude);
         textDecibel = (TextView) findViewById(R.id.textDecibel);
         textFrequency = (TextView) findViewById(R.id.textFrequency);
+        textStatus = (TextView) findViewById(R.id.textStatus); // display status of program
 
 
+        /**
+         * Check if the microphone permission has been granted.
+         */
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
 
@@ -234,6 +242,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Toast.makeText(this, "Audio Stopped", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    /**
+     * START RECORDING
+     *  When the red button is pressed, it will start logging all the frequency and amplitude.
+     *    - Store the amplitude and and frequency in two separate arrays
+     *    - Once the recording is finished (5 seconds?) display the array onto the graph.
+     */
+    public void startRecord(View v) {
+
+    }
+
 
 
 

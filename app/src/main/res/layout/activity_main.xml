@@ -9,31 +9,6 @@
 
 
     <Spinner
-        android:id="@+id/spinner_audiofile"
-        android:layout_width="169dp"
-        android:layout_height="45dp"
-        android:paddingTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.933"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.68" />
-
-    <TextView
-        android:id="@+id/textSampling"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sampling Rate"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.069"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.628" />
-
-    <Spinner
         android:id="@+id/spinner_samples"
         android:layout_width="169dp"
         android:layout_height="45dp"
@@ -43,7 +18,19 @@
         app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.68" />
+        app:layout_constraintVertical_bias="0.781" />
+
+    <Spinner
+        android:id="@+id/spinner_audiofile"
+        android:layout_width="169dp"
+        android:layout_height="45dp"
+        android:paddingTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.781" />
 
     <TextView
         android:id="@+id/textAudio"
@@ -56,34 +43,76 @@
         app:layout_constraintHorizontal_bias="0.653"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.628" />
+        app:layout_constraintVertical_bias="0.724" />
+
+    <TextView
+        android:id="@+id/textSampling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sampling Rate"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.069"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.724" />
+
+    <TextView
+        android:id="@+id/textDecibel"
+        android:layout_width="67dp"
+        android:layout_height="27dp"
+        android:text="Decibel"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.875"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64" />
 
     <TextView
         android:id="@+id/textAmplitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="Amplitude"
+        android:textColor="#000000"
         android:textSize="20dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.212"
+        app:layout_constraintHorizontal_bias="0.137"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.571" />
+        app:layout_constraintVertical_bias="0.64" />
+
+    <TextView
+        android:id="@+id/textStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.855" />
 
     <TextView
         android:id="@+id/textFrequency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="Frequency"
+        android:textColor="#000000"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.818"
+        app:layout_constraintHorizontal_bias="0.534"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.571" />
+        app:layout_constraintVertical_bias="0.64" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -98,34 +127,9 @@
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/bar_new" />
 
-    <TextView
-        android:id="@+id/textDecibel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textColor="#000000"
-        android:textSize="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.821" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="435dp"
-        android:layout_height="427dp"
-        android:layout_marginBottom="364dp"
-        android:background="#A5A5A5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_dummy" />
-
     <Button
-        android:id="@+id/buttonPlay"
-        android:layout_width="100dp"
+        android:id="@+id/buttonPlayPause"
+        android:layout_width="84dp"
         android:layout_height="54dp"
         android:background="@drawable/rounded_button_green"
         android:onClick="playSound"
@@ -134,18 +138,18 @@
         android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.36"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.976" />
 
     <Button
-        android:id="@+id/buttonStop"
-        android:layout_width="100dp"
+        android:id="@+id/buttonRecord"
+        android:layout_width="84dp"
         android:layout_height="54dp"
         android:background="@drawable/rounded_button_red"
-        android:onClick="stopSound"
-        android:text="Stop"
+        android:onClick="startRecord"
+        android:text="Record"
         android:textColor="#ffffff"
         android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -156,16 +160,31 @@
         app:layout_constraintVertical_bias="0.976" />
 
     <Button
-        android:id="@+id/buttonOpenDb"
-        android:layout_width="100dp"
+        android:id="@+id/buttonData"
+        android:layout_width="84dp"
         android:layout_height="54dp"
         android:background="@drawable/rounded_button"
-        android:text="Saved Responses"
+        android:text="Saved Data"
         android:textColor="#ffffff"
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976" />
+
+    <Button
+        android:id="@+id/buttonSettings"
+        android:layout_width="84dp"
+        android:layout_height="54dp"
+        android:background="@drawable/rounded_button"
+        android:text="Settings"
+        android:textColor="#ffffff"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.663"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.976" />

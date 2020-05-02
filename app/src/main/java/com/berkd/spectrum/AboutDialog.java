@@ -15,9 +15,9 @@ public class AboutDialog extends AppCompatDialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle("Coming soon!")
-                .setMessage("Spectrum is currently under heavy development, " +
-                        "more functionality coming soon.")
+        builder.setTitle("About")
+                .setMessage("Spectrum is a room frequency response app which is aimed at audio " +
+                        "enthusiasts and people who want to step up their audio experience.")
 
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
