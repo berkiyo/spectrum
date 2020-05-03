@@ -2,8 +2,8 @@
     <string name="app_name">Spectrum</string>
 
     <string-array name="sampleRate">
-        <item>48000 Hz</item>
-        <item>44100 Hz</item>
+        <item>50 Points</item>
+        <item>100 Points</item>
         <item>22050 Hz</item>
         <item>16000 Hz</item>
         <item>8000 Hz</item>
