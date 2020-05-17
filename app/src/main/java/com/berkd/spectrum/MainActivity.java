@@ -1,6 +1,7 @@
 package com.berkd.spectrum;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,6 +13,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,52 +52,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private int count = 100;
 
     private int[] amplitudeVals = new int[count];        // Store the amplitude values (recording only)
-    private double[] frequencyVals = new double[count];        // Store the frequency values (recording only)
-
-    // GRAPH VIEW
-    private LineChart mChart;
-    private Thread thread;
-    private boolean plotData = true;
-
-
+    private double[] frequencyVals = new double[count];
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        initAudioFileSpinner();
-        initAudioSamplesSpinner();
-        constructionDialog();
-
-        recorder = new Recorder(callback);
-        audioCalculator = new AudioCalculator();
-        handler = new Handler(Looper.getMainLooper());
-
-        textAmplitude = (TextView) findViewById(R.id.textAmplitude);
-        textDecibel = (TextView) findViewById(R.id.textDecibel);
-        textFrequency = (TextView) findViewById(R.id.textFrequency);
-        //textStatus = (TextView) findViewById(R.id.textStatus); // display status of program
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
 
         textAverageAmp = findViewById(R.id.textAverageAmp);
         textAverageFreq = findViewById(R.id.textAverageFreq);
 
 
         // Initialise the chart / graph
-        mChart = findViewById(R.id.graph);
-        mChart.getDescription().setEnabled(true);
-        mChart.getDescription().setText("Frequency vs Time Plot");
-        mChart.setTouchEnabled(false); // disable touch functionality.
-        mChart.setDragEnabled(false);
-        //mChart.setScaleEnabled(false);
-        //mChart.setDrawGridBackground(true);
-        //mChart.setBackgroundColor(Color.WHITE);
-
-        LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
-        mChart.setData(data);       // put the data into the chart
-
-        startPlot();
 
         /**
          * Check if the microphone permission has been granted.
@@ -104,61 +71,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 != PackageManager.PERMISSION_GRANTED) {
 
         }
-
-    }
-
-    public void startPlot() {
-        if (thread != null) {
-            thread.interrupt();
-        }
-        // Create a new thread if it is already running
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    addEntry();
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * Used to add an entry to the graph
-     * @param frequency
-     */
-    public void addEntry() {
-        LineData data = mChart.getData();
-
-        if (data != null) {
-            // append new data to the existing one
-            ILineDataSet set = data.getDataSetByIndex(0);
-
-            if (set == null) {
-                set = createSet();
-                data.addDataSet(set);
-            }
-            Random rand = new Random();
-            data.addEntry(new Entry(set.getEntryCount(),  rand.nextInt()+ 5), 0); // add new data
-            data.notifyDataChanged();
-            mChart.setMaxVisibleValueCount(150);
-            mChart.moveViewToX(data.getEntryCount());
-
-        }
-    }
-
-    public LineDataSet createSet() {
-        LineDataSet set = new LineDataSet(null, "Dynamic Data");
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setLineWidth(3f);
-        set.setColor(Color.MAGENTA);
-        set.setMode(LineDataSet.Mode.CUBIC_BEZIER); // smooths
-        set.setCubicIntensity(0.2f);
-        return set;
     }
 
 
@@ -187,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         constructionDialog.show(getSupportFragmentManager(), "construction dialog");
     }
 
+    /**
+     * Notify the user that the microphone permission is not enabled.
+     */
     public void permissionDialog() {
         PermissionDialog permissionDialog = new PermissionDialog();
         permissionDialog.show(getSupportFragmentManager(), "permission dialog");
