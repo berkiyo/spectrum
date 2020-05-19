@@ -1,16 +1,22 @@
 <resources>
     <string name="app_name">Spectrum</string>
 
-    <string-array name="sampleRate">
+    <string-array name="dataRate">
         <item>50 Points</item>
         <item>100 Points</item>
-        <item>22050 Hz</item>
-        <item>16000 Hz</item>
-        <item>8000 Hz</item>
+        <item>150 Points</item>
+        <item>200 Points</item>
+        <item>300 Points</item>
     </string-array>
 
-    <string-array name="sources">
-        <item>Default</item>
+    <string-array name="speed">
+        <item>10 ms</item>
+        <item>25 ms</item>
+        <item>50 ms</item>
+        <item>100 ms</item>
+        <item>200 ms</item>
+        <item>300 ms</item>
+        <item>500 ms</item>
     </string-array>
 
     <string-array name="audioFile">
