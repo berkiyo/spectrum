@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Freqs.iml" filepath="$PROJECT_DIR$/Freqs.iml" group="Freqs" />
+      <module fileurl="file://$PROJECT_DIR$/Spectrum.iml" filepath="$PROJECT_DIR$/Spectrum.iml" group="Spectrum" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Spectrum/app" />
       <module fileurl="file://$USER_HOME$/Android/Projects/spectrum/spectrum-Spectrum.iml" filepath="$USER_HOME$/Android/Projects/spectrum/spectrum-Spectrum.iml" group="Spectrum" />
       <module fileurl="file://$USER_HOME$/Android/Projects/spectrum/app/spectrum-app.iml" filepath="$USER_HOME$/Android/Projects/spectrum/app/spectrum-app.iml" group="Spectrum/app" />
     </modules>

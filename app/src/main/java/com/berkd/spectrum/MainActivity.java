@@ -1,38 +1,38 @@
 package com.berkd.spectrum;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
+import android.app.Activity;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PersistableBundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.jjoe64.graphview.*;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.io.InterruptedIOException;
 import java.util.Random;
+
+import static com.berkd.spectrum.R.id.textFrequency;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -54,28 +54,89 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private int[] amplitudeVals = new int[count];        // Store the amplitude values (recording only)
     private double[] frequencyVals = new double[count];
 
+
+    private final Handler mHandler = new Handler();
+    private Runnable mTimer;
+    private double graphLastXValue = 5d;
+    private LineGraphSeries<DataPoint> mSeries;
+
+
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        initAudioFileSpinner();
+        initAudioSamplesSpinner();
+        constructionDialog();
+
+
+        recorder = new Recorder(callback);
+        audioCalculator = new AudioCalculator();
+        handler = new Handler(Looper.getMainLooper());
+
+        textAmplitude = (TextView) findViewById(R.id.textAmplitude);
+        textDecibel = (TextView) findViewById(R.id.textDecibel);
+        textFrequency = (TextView) findViewById(R.id.textFrequency);
+        //textStatus = (TextView) findViewById(R.id.textStatus); // display status of program
 
         textAverageAmp = findViewById(R.id.textAverageAmp);
         textAverageFreq = findViewById(R.id.textAverageFreq);
 
 
-        // Initialise the chart / graph
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        initGraph(graph);
+    }
 
-        /**
-         * Check if the microphone permission has been granted.
-         */
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
+    public void initGraph(GraphView graph) {
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(10);
 
-        }
+        graph.getGridLabelRenderer().setLabelVerticalWidth(100);
+
+        // first mSeries is a line
+        mSeries = new LineGraphSeries<>();
+        mSeries.setDrawDataPoints(true);
+        mSeries.setDrawBackground(true);
+        graph.addSeries(mSeries);
     }
 
 
 
 
+    @Override
+    public void onResume() {
+
+        mTimer = new Runnable() {
+            @Override
+            public void run() {
+                graphLastXValue += 0.25d;
+                mSeries.appendData(new DataPoint(graphLastXValue, getRandom()), true, 100);
+                mHandler.postDelayed(this, 100);
+            }
+        };
+        mHandler.postDelayed(mTimer, 500);
+        recorder.start();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mHandler.removeCallbacks(mTimer);
+        recorder.stop();
+        super.onPause();
+    }
+
+    double mLastRandom = 2;
+    Random mRand = new Random();
+    private double getRandom() {
+
+        //return mLastRandom += mRand.nextDouble()*0.5 - 0.25;
+        return Double.parseDouble(textAmplitude.getText().toString());
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * About_Dialog
      * TODO: Hyperlink to my website for a more detailed.
@@ -99,9 +160,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         constructionDialog.show(getSupportFragmentManager(), "construction dialog");
     }
 
-    /**
-     * Notify the user that the microphone permission is not enabled.
-     */
     public void permissionDialog() {
         PermissionDialog permissionDialog = new PermissionDialog();
         permissionDialog.show(getSupportFragmentManager(), "permission dialog");
@@ -251,53 +309,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    /**
-     * START RECORDING
-     *  When the red button is pressed, it will start logging all the frequency and amplitude.
-     *    - Store the amplitude and and frequency in two separate arrays
-     *    - Once the recording is finished (5 seconds?) display the array onto the graph.
-     */
-    public void startRecord(View v) {
-
-        int averageAmp = 0;
-        double averageFreq = 0;
-        String averageAmpStr;
-        String averageFreqStr;
-
-        // USING 50 points for now
-        for (int i = 0; i < count; i++) {
-
-            amplitudeVals[i] = audioCalculator.getAmplitude();
-            frequencyVals[i] = audioCalculator.getFrequency();
-        }
-
-        // calculate the average
-        for (int i = 0; i < amplitudeVals.length; i++) {
-            averageAmp = averageAmp + amplitudeVals[i];
-            averageAmp = averageAmp/count;
-
-            averageFreq = averageFreq + frequencyVals[i];
-            averageFreq = averageFreq/count;
-        }
-
-
-        averageAmpStr = "Average Amplitude = " + averageAmp;
-        averageFreqStr = "Average Frequency = " + averageFreq;
-
-        textAverageAmp.setText(averageAmpStr);
-        textAverageFreq.setText(averageFreqStr);
-
-        /**
-         * GRAPH GOES HERE
-         */
-
-
-
-
-
-
-    }
-
 
 
 
@@ -331,24 +342,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     };
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        recorder.start();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        recorder.stop();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopPlayer();
-    }
 
 
 
