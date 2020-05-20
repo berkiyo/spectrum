@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.*;
 
 import com.jjoe64.graphview.*;
 import com.jjoe64.graphview.series.DataPoint;
