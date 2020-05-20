@@ -1,11 +1,13 @@
 package com.berkd.spectrum;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner_audiofile;
     private Spinner spinner_samplespeed;
 
-    private int speed = 10;
+    private int speed = 100;
     private int audioFilePicked = 1; // For the dropdown spinner (audioFile spinner)
     private int myDataPoints = 50; // used to set the precision of the amplitude accuracy.
 
@@ -166,11 +169,6 @@ public class MainActivity extends AppCompatActivity {
         constructionDialog.show(getSupportFragmentManager(), "construction dialog");
     }
 
-    public void permissionDialog() {
-        PermissionDialog permissionDialog = new PermissionDialog();
-        permissionDialog.show(getSupportFragmentManager(), "permission dialog");
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -188,7 +186,48 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.item1:
-                aboutDialog();
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+                View mView = getLayoutInflater().inflate(R.layout.save_popup, null);
+
+
+                mHandler.removeCallbacks(mTimer); // pause the graph
+
+
+                final EditText mEditText = (EditText) mView.findViewById(R.id.saveTextField);
+
+                mBuilder.setView(mView);
+
+
+
+                mBuilder.setTitle("Edit");
+
+                mBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        mTimer = new Runnable() {
+                            @Override
+                            public void run() {
+                                graphLastXValue += 0.25d;
+                                mSeries.appendData(new DataPoint(graphLastXValue, getRandom()), true, myDataPoints);
+                                mHandler.postDelayed(this, speed);
+                            }
+                        };
+                        mHandler.postDelayed(mTimer, 50);
+                        dialog.dismiss();
+                    }
+                });
+
+                mBuilder.setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+
+                });
+
+                AlertDialog dialog = mBuilder.create();
+                dialog.show();
                 break;
 
             case R.id.item2:
@@ -451,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
                     mHandler.postDelayed(this, speed);
                 }
             };
-            mHandler.postDelayed(mTimer, 700);
+            mHandler.postDelayed(mTimer, 50);
 
             // set it back to normal state
             buttonFreezeClicked = false;
