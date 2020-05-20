@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -17,23 +18,31 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.*;
 
 import com.jjoe64.graphview.*;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    /**
+     * Database Stuff
+     */
+    DatabaseHelper myDB;
+    Button buttonData;
 
     private MediaPlayer player;
 
@@ -65,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        myDB = new DatabaseHelper(this); // setup and load database
+        buttonData = findViewById(R.id.buttonData); // button declared here! o_o
+
         /**
          * Initialise the spinners
          */
@@ -76,8 +89,7 @@ public class MainActivity extends AppCompatActivity {
         initSampleSpeedSpinner();
 
 
-
-        constructionDialog();
+        //constructionDialog(); // TODO: Get rid of it once done (or just comment it out)
 
         recorder = new Recorder(callback);
         audioCalculator = new AudioCalculator();
@@ -165,16 +177,85 @@ public class MainActivity extends AppCompatActivity {
         helpDialog.show(getSupportFragmentManager(), "help dialog");
     }
 
-    public void constructionDialog() {
-        ConstructionDialog constructionDialog = new ConstructionDialog();
-        constructionDialog.show(getSupportFragmentManager(), "construction dialog");
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_menu, menu);
         return true;
+    }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+    /*******************************************
+     * Run Graph
+     *  Run the graph. With a 50ms delay.
+     */
+    public void runGraph() {
+        mTimer = new Runnable() {
+            @Override
+            public void run() {
+                graphLastXValue += 0.25d;
+                mSeries.appendData(new DataPoint(graphLastXValue, getRandom()), true, myDataPoints);
+                mHandler.postDelayed(this, speed);
+            }
+        };
+        mHandler.postDelayed(mTimer, 50);
+    }
+
+    /****************************
+     * Pause Graph
+     *      Self Explantory.
+     */
+    public void pauseGraph() {
+        mHandler.removeCallbacks(mTimer); // pause the graph
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void saveTheData(String input) {
+        View inflatedView = getLayoutInflater().inflate(R.layout.saved_data_activity, null);
+        ListView listView = findViewById(R.id.mainList);
+
+        ArrayList<String> arrayList = new ArrayList<>();
+
+        arrayList.add(input);
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,
+                arrayList);
+
+        listView.setAdapter(arrayAdapter);
+
+    }
+
+    /***********************************
+     * Show the listview thingy
+     */
+    public void showDataSaved() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.saved_data_activity, null);
+
+
+        pauseGraph();
+
+        final EditText mEditText = (EditText) mView.findViewById(R.id.saveTextField);
+        final String textEntered = mEditText.toString(); // convert to string
+
+        mBuilder.setView(mView);
+
+
+
+        mBuilder.setTitle("Saved Data");
+
+        mBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Run timer again.
+                runGraph();
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = mBuilder.create();
+        dialog.show();
     }
 
 
@@ -186,61 +267,23 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
 
+            // Save data
             case R.id.item1:
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-                View mView = getLayoutInflater().inflate(R.layout.save_popup, null);
-
-
-                mHandler.removeCallbacks(mTimer); // pause the graph
-
-
-                final EditText mEditText = (EditText) mView.findViewById(R.id.saveTextField);
-
-                mBuilder.setView(mView);
-
-
-
-                mBuilder.setTitle("Edit");
-
-                mBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        mTimer = new Runnable() {
-                            @Override
-                            public void run() {
-                                graphLastXValue += 0.25d;
-                                mSeries.appendData(new DataPoint(graphLastXValue, getRandom()), true, myDataPoints);
-                                mHandler.postDelayed(this, speed);
-                            }
-                        };
-                        mHandler.postDelayed(mTimer, 50);
-                        dialog.dismiss();
-                    }
-                });
-
-                mBuilder.setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-
-                });
-
-                AlertDialog dialog = mBuilder.create();
-                dialog.show();
+                newEntry();
                 break;
 
+            // help
             case R.id.item2:
                 helpDialog();
                 break;
 
             case R.id.item3:
-                aboutDialog();
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                Toast.makeText(MainActivity.this, "Keeping screen on!", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.item4:
-                aboutDialog();
+                Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.item5:
@@ -311,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                // TODO: Implement the functioanlity.
+                // TODO: Implement the functionality.
 
                 switch (position) {
                     case 0:
@@ -399,7 +442,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    // MEDIA STUFF
 
 
     /**
@@ -476,6 +520,12 @@ public class MainActivity extends AppCompatActivity {
     public void stopAudio(View view) {
         stopPlayer();
     }
+    // END OF MEDIA STUFF
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
 
     // FREEZE CLICKED
@@ -530,6 +580,80 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     };
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * DATABASE STUFF HERE
+     */
+
+    public void addData(String newEntry) {
+
+        boolean insertData = myDB.addData(newEntry);
+
+        if(insertData == true){
+            Toast.makeText(this, "Data Successfully Inserted!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Something went wrong :(.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    public void newEntry() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.save_popup, null);
+
+
+        pauseGraph();
+
+        final EditText mEditText = (EditText) mView.findViewById(R.id.saveTextField);
+        final String newEntry = mEditText.getText().toString();
+
+
+        mBuilder.setView(mView);
+
+
+
+        mBuilder.setTitle("Save Graph");
+
+        mBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(mEditText.length() != 0){
+                    addData(newEntry);
+                    mEditText.setText("");
+                } else {
+                    Toast.makeText(MainActivity.this, "Put something in the field.", Toast.LENGTH_LONG).show();
+                }
+                runGraph();
+                dialog.dismiss();
+            }
+        });
+
+        mBuilder.setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                runGraph();
+                dialog.dismiss();
+            }
+
+        });
+
+        AlertDialog dialog = mBuilder.create();
+        dialog.show();
+
+    }
+
+
+
+    /**
+     * DATA VIEW BUTTON CLICKED
+     *  - Show the data
+     */
+    public void buttonDBClicked(View v) {
+        Intent intent = new Intent(MainActivity.this, ViewListContents.class);
+        startActivity(intent);
+    }
 
 }

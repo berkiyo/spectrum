@@ -205,6 +205,7 @@
         android:layout_width="84dp"
         android:layout_height="54dp"
         android:background="@drawable/rounded_button"
+        android:onClick="buttonDBClicked"
         android:text="Saved\nData"
         android:textColor="#ffffff"
         android:textSize="14dp"
