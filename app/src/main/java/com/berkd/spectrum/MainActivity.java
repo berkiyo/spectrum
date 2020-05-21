@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,7 +33,9 @@ import com.jjoe64.graphview.*;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 
 
@@ -65,8 +68,10 @@ public class MainActivity extends AppCompatActivity {
 
     private final Handler mHandler = new Handler();
     private Runnable mTimer;
-    private double graphLastXValue = 5d;
+    private double graphLastXValue = 0;
     private LineGraphSeries<DataPoint> mSeries;
+
+    private TextView txt;
 
 
     @Override
@@ -98,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         textAmplitude = (TextView) findViewById(R.id.textAmplitude);
         textFrequency = (TextView) findViewById(R.id.textFrequency);
-        //textStatus = (TextView) findViewById(R.id.textStatus); // display status of program
+        txt = textAmplitude; // STATE OF SWITCH
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
         initGraph(graph);
@@ -128,22 +133,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
 
-        mTimer = new Runnable() {
-            @Override
-            public void run() {
-                graphLastXValue += 0.25d;
-                mSeries.appendData(new DataPoint(graphLastXValue, getRandom()), true, myDataPoints);
-                mHandler.postDelayed(this, speed);
-            }
-        };
-        mHandler.postDelayed(mTimer, 700);
+        runGraph();
         recorder.start();
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mHandler.removeCallbacks(mTimer);
+        pauseGraph();
         recorder.stop();
         super.onPause();
     }
@@ -151,10 +148,10 @@ public class MainActivity extends AppCompatActivity {
     double mLastRandom = 2;
     Random mRand = new Random();
 
-    private double getRandom() {
+    // GET THE VALUE! :D
+    private double getRandom(TextView txt) {
 
-        //return mLastRandom += mRand.nextDouble()*0.5 - 0.25;
-        return Double.parseDouble(textAmplitude.getText().toString());
+        return Double.parseDouble(txt.getText().toString());
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 graphLastXValue += 0.25d;
-                mSeries.appendData(new DataPoint(graphLastXValue, getRandom()), true, myDataPoints);
+                mSeries.appendData(new DataPoint(graphLastXValue, getRandom(txt)), true, myDataPoints);
                 mHandler.postDelayed(this, speed);
             }
         };
@@ -209,54 +206,6 @@ public class MainActivity extends AppCompatActivity {
         mHandler.removeCallbacks(mTimer); // pause the graph
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    public void saveTheData(String input) {
-        View inflatedView = getLayoutInflater().inflate(R.layout.saved_data_activity, null);
-        ListView listView = findViewById(R.id.mainList);
-
-        ArrayList<String> arrayList = new ArrayList<>();
-
-        arrayList.add(input);
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,
-                arrayList);
-
-        listView.setAdapter(arrayAdapter);
-
-    }
-
-    /***********************************
-     * Show the listview thingy
-     */
-    public void showDataSaved() {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-        View mView = getLayoutInflater().inflate(R.layout.saved_data_activity, null);
-
-
-        pauseGraph();
-
-        final EditText mEditText = (EditText) mView.findViewById(R.id.saveTextField);
-        final String textEntered = mEditText.toString(); // convert to string
-
-        mBuilder.setView(mView);
-
-
-
-        mBuilder.setTitle("Saved Data");
-
-        mBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                // Run timer again.
-                runGraph();
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog dialog = mBuilder.create();
-        dialog.show();
-    }
 
 
     /**
@@ -358,19 +307,14 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (position) {
                     case 0:
-                        myDataPoints = 50;
+                        pauseGraph();
+                        txt = textAmplitude;
+                        runGraph();
                         break;
                     case 1:
-                        myDataPoints = 100;
-                        break;
-                    case 2:
-                        myDataPoints = 150;
-                        break;
-                    case 3:
-                        myDataPoints = 200;
-                        break;
-                    case 4:
-                        myDataPoints = 300;
+                        pauseGraph();
+                        txt = textFrequency;
+                        runGraph();
                         break;
                     default:
                         Toast.makeText(MainActivity.this, "uhh!", Toast.LENGTH_SHORT).show();
@@ -533,22 +477,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (buttonFreezeClicked) {
 
-            mTimer = new Runnable() {
-                @Override
-                public void run() {
-                    graphLastXValue += 0.25d;
-                    mSeries.appendData(new DataPoint(graphLastXValue, getRandom()), true, myDataPoints);
-                    mHandler.postDelayed(this, speed);
-                }
-            };
-            mHandler.postDelayed(mTimer, 50);
+            runGraph();
 
             // set it back to normal state
             buttonFreezeClicked = false;
 
 
         } else {
-            mHandler.removeCallbacks(mTimer);
+            pauseGraph();
             buttonFreezeClicked = true;
         }
 
@@ -605,28 +541,26 @@ public class MainActivity extends AppCompatActivity {
 
         pauseGraph();
 
-        final EditText mEditText = (EditText) mView.findViewById(R.id.saveTextField);
-        final String newEntry = mEditText.getText().toString();
-
-
+        final EditText mEditText = findViewById(R.id.saveTextField);
         mBuilder.setView(mView);
-
-
-
         mBuilder.setTitle("Save Graph");
+
 
         mBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Calendar calendar = Calendar.getInstance(); // Get current time and make it the subtext
+                String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime()); // format date
 
-                if(mEditText.length() != 0){
-                    addData(newEntry);
-                    mEditText.setText("");
-                } else {
-                    Toast.makeText(MainActivity.this, "Put something in the field.", Toast.LENGTH_LONG).show();
-                }
+                // ADD THE TEXT!!!
+                addData("\nLast Frequency = " + textFrequency.getText().toString() +
+                        "\nLast Amplitude = " + textAmplitude.getText().toString() +
+                        "\n" + currentDate + "\n");
+
+
                 runGraph();
                 dialog.dismiss();
+
             }
         });
 

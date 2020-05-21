@@ -43,7 +43,7 @@ public class ViewListContents extends AppCompatActivity {
         } else {
             while(data.moveToNext()){
                 theList.add(data.getString(1));
-                ListAdapter listAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,theList);
+                ListAdapter listAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, theList);
                 listView.setAdapter(listAdapter);
             }
         }
@@ -74,12 +74,13 @@ public class ViewListContents extends AppCompatActivity {
 
         /**
          * CLEAR THE LIST!
-         * Not implemented yet.
          */
         buttonClearList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ViewListContents.this, "Feature Coming Soon!", Toast.LENGTH_SHORT).show();
+                myDB.deleteAllRecords();
+                finish();
+                startActivity(getIntent());
             }
         });
 

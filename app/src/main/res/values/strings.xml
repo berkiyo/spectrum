@@ -2,11 +2,9 @@
     <string name="app_name">Spectrum</string>
 
     <string-array name="dataRate">
-        <item>50 Points</item>
-        <item>100 Points</item>
-        <item>150 Points</item>
-        <item>200 Points</item>
-        <item>300 Points</item>
+        <item>Amplitude</item>
+        <item>Frequency</item>
+
     </string-array>
 
     <string-array name="speed">

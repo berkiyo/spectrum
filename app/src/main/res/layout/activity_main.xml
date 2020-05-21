@@ -72,7 +72,6 @@
         android:id="@+id/textAmplitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NA"
         android:textColor="#000000"
         android:textSize="20dp"
 
@@ -101,7 +100,6 @@
         android:id="@+id/textFrequency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NA"
         android:textColor="#000000"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -115,12 +113,12 @@
         android:id="@+id/textLength"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data Points"
+        android:text="Graph Output"
         android:textSize="15dp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.702"
+        app:layout_constraintHorizontal_bias="0.69"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.673" />
@@ -189,10 +187,10 @@
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.682"
+        app:layout_constraintHorizontal_bias="0.649"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.812" />
+        app:layout_constraintVertical_bias="0.811" />
 
     <Button
         android:id="@+id/buttonPlayPause"
