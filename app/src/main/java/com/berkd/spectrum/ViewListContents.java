@@ -29,7 +29,6 @@ public class ViewListContents extends AppCompatActivity {
 
         buttonGoBack = findViewById(R.id.buttonGoBack);
         buttonClearList = findViewById(R.id.buttonClearList);
-        buttonSortList = findViewById(R.id.buttonSortList);
 
         ListView listView = (ListView) findViewById(R.id.mainList);
         myDB = new DatabaseHelper(this);
@@ -57,17 +56,6 @@ public class ViewListContents extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ViewListContents.this, MainActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        /**
-         * SORT THE LIST!
-         * Not implemented yet.
-         */
-        buttonSortList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ViewListContents.this, "Feature Coming Soon!", Toast.LENGTH_SHORT).show();
             }
         });
 

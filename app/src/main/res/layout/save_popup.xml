@@ -8,6 +8,7 @@
         android:id="@+id/saveTextField"
         android:layout_width="match_parent"
         android:layout_height="64dp"
+        android:hint="Your Note"
         android:paddingTop="2dp"
         android:paddingBottom="2dp" />
 

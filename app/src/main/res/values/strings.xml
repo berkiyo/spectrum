@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Spectrum</string>
 
-    <string-array name="dataRate">
+    <string-array name="graphtype">
         <item>Amplitude</item>
         <item>Frequency</item>
 
