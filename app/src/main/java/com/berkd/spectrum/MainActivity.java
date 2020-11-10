@@ -399,25 +399,25 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (position) {
                     case 0:
-                        speed = 10;
+                        speed = 250;
                         break;
                     case 1:
-                        speed = 25;
+                        speed = 500;
                         break;
                     case 2:
-                        speed = 50;
+                        speed = 1000;
                         break;
                     case 3:
-                        speed = 100;
+                        speed = 1250;
                         break;
                     case 4:
-                        speed = 200;
+                        speed = 1500;
                         break;
                     case 5:
-                        speed = 300;
+                        speed = 2000;
                         break;
                     case 6:
-                        speed = 500;
+                        speed = 2500;
                         break;
                     default:
                         Toast.makeText(MainActivity.this, "uhh!", Toast.LENGTH_SHORT).show();
